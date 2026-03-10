@@ -4,6 +4,8 @@ A lightweight REST wrapper around FastNoiseLite that exposes **all noise configu
 
 The API automatically maps query parameters to FastNoiseLite setters, so **new features are supported without modifying the server**.
 
+[Demo available at noise.killian.blog](https://noise.killian.blog)
+
 ## Features
 
 * Full support for FastNoiseLite configuration

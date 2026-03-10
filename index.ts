@@ -10,9 +10,27 @@ Detect FastNoiseLite setters
 const setters = Object.getOwnPropertyNames(FastNoiseLite.prototype)
   .filter(n => n.startsWith("Set"));
 
+// Enums available in FastNoiseLite
+const enums = {
+  NoiseType: Object.keys((FastNoiseLite as any).NoiseType || {}),
+  RotationType3D: Object.keys((FastNoiseLite as any).RotationType3D || {}),
+  FractalType: Object.keys((FastNoiseLite as any).FractalType || {}),
+  CellularDistanceFunction: Object.keys((FastNoiseLite as any).CellularDistanceFunction || {}),
+  CellularReturnType: Object.keys((FastNoiseLite as any).CellularReturnType || {}),
+  DomainWarpType: Object.keys((FastNoiseLite as any).DomainWarpType || {}),
+};
+
 const parameters = setters.map(s => {
-  const name = s.replace("Set", "");
-  return name.charAt(0).toLowerCase() + name.slice(1);
+  const originalName = s.replace("Set", "");
+  const camelName = originalName.charAt(0).toLowerCase() + originalName.slice(1);
+  const possibleValues = enums[originalName as keyof typeof enums];
+
+  return {
+    name: camelName,
+    originalName,
+    type: possibleValues ? "string" : "number",
+    enumValues: possibleValues
+  };
 });
 
 /*
@@ -116,12 +134,21 @@ Generate OpenAPI dynamically
 */
 function buildOpenApi() {
 
-  const queryParams = parameters.map(p => ({
-    name: p,
-    in: "query",
-    schema: { type: "string" },
-    required: false,
-  }));
+  const queryParams = parameters.map(p => {
+    const param: any = {
+      name: p.name,
+      in: "query",
+      schema: { type: p.type },
+      required: false,
+      description: `Mapped to FastNoiseLite parameter ${p.name}`
+    };
+
+    if (p.enumValues) {
+      param.schema.enum = p.enumValues;
+    }
+
+    return param;
+  });
 
   const baseXY = [
     {
@@ -149,7 +176,7 @@ function buildOpenApi() {
     info: {
       title: "FastNoiseLite REST API",
       version: "1.0.0",
-      description: "REST wrapper exposing all FastNoiseLite configuration options"
+      description: "REST wrapper exposing all FastNoiseLite configuration options.<br/>See FastNoiseLite [documentation](https://docs.godotengine.org/en/stable/classes/class_fastnoiselite.html) for more information."
     },
     paths: {
       "/value": {
@@ -166,6 +193,9 @@ function buildOpenApi() {
                     properties: {
                       value: { type: "number" }
                     }
+                  },
+                  example: {
+                    value: 0.49534581752327544
                   }
                 }
               }
@@ -185,7 +215,55 @@ function buildOpenApi() {
           ],
           responses: {
             "200": {
-              description: "Noise grid"
+              description: "Noise grid",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "object",
+                    properties: {
+                      width: { type: "number" },
+                      height: { type: "number" },
+                      data: {
+                        type: "array",
+                        items: {
+                          type: "array",
+                          items: { type: "number" }
+                        }
+                      }
+                    }
+                  },
+                  example: {
+                    width: 4,
+                    height: 4,
+                    data: [
+                      [
+                        0.0013699283903753415,
+                        0.00037985513330317396,
+                        0.0007597100842758968,
+                        0.0011395646705878257
+                      ],
+                      [
+                        0.0004950368477246744,
+                        0.0008748919110364906,
+                        0.0012547467128119862,
+                        0.0016346010707208717
+                      ],
+                      [
+                        0.0009900734578316788,
+                        0.0013699283903753415,
+                        0.0017497829821768649,
+                        0.002129637050906035
+                      ],
+                      [
+                        0.0014851095927034842,
+                        0.0018649643337022453,
+                        0.0022448186547531267,
+                        0.0026246723735260107
+                      ]
+                    ]
+                  }
+                }
+              }
             }
           }
         }
