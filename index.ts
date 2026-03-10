@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import FastNoiseLite from "fastnoise-lite";
 
 const app = express();
@@ -10,28 +10,31 @@ Detect FastNoiseLite setters
 const setters = Object.getOwnPropertyNames(FastNoiseLite.prototype)
   .filter(n => n.startsWith("Set"));
 
-const parameters = setters.map(s => s.replace("Set", ""));
+const parameters = setters.map(s => {
+  const name = s.replace("Set", "");
+  return name.charAt(0).toLowerCase() + name.slice(1);
+});
 
 /*
 Apply parameters dynamically
 */
-function applyParams(noise, params) {
+function applyParams(noise: FastNoiseLite, params: Record<string, any>) {
 
   for (const [key, value] of Object.entries(params)) {
 
-    const setter = "Set" + key;
+    const setter = "Set" + key.charAt(0).toUpperCase() + key.slice(1);
 
     if (setters.includes(setter)) {
 
       const num = Number(value);
 
-      noise[setter](isNaN(num) ? value : num);
-
+      // @ts-ignore
+      noise[setter as keyof FastNoiseLite](isNaN(num) ? value : num);
     }
   }
 }
 
-function buildNoise(params) {
+function buildNoise(params: Record<string, any>) {
 
   const noise = new FastNoiseLite();
 
@@ -43,13 +46,13 @@ function buildNoise(params) {
 /*
 Noise value endpoint
 */
-app.get("/noise/value", (req, res) => {
+app.get("/value", (req: Request, res: Response) => {
 
   const { x = 0, y = 0, z } = req.query;
 
-  const noise = buildNoise(req.query);
+  const noise = buildNoise(req.query as Record<string, any>);
 
-  let value;
+  let value: number;
 
   if (z !== undefined)
     value = noise.GetNoise(Number(x), Number(y), Number(z));
@@ -63,21 +66,21 @@ app.get("/noise/value", (req, res) => {
 /*
 Grid endpoint
 */
-app.get("/noise/grid", (req, res) => {
+app.get("/grid", (req: Request, res: Response) => {
 
   const { width = 64, height = 64, scale = 0.01 } = req.query;
 
-  const noise = buildNoise(req.query);
+  const noise = buildNoise(req.query as Record<string, any>);
 
   const w = Number(width);
   const h = Number(height);
   const s = Number(scale);
 
-  const grid = [];
+  const grid: number[][] = [];
 
   for (let y = 0; y < h; y++) {
 
-    const row = [];
+    const row: number[] = [];
 
     for (let x = 0; x < w; x++) {
 
@@ -98,26 +101,9 @@ app.get("/noise/grid", (req, res) => {
 });
 
 /*
-Domain warp endpoint
-*/
-// app.get("/noise/warp", (req, res) => {
-
-//   const { x = 0, y = 0 } = req.query;
-
-//   const noise = buildNoise(req.query);
-
-//   const pos = { x: Number(x), y: Number(y) };
-
-//   noise.DomainWarp(pos);
-
-//   res.json(pos);
-
-// });
-
-/*
 Schema endpoint
 */
-app.get("/schema", (req, res) => {
+app.get("/schema", (req: Request, res: Response) => {
 
   res.json({
     fastNoiseLiteParameters: parameters
@@ -135,7 +121,6 @@ function buildOpenApi() {
     in: "query",
     schema: { type: "string" },
     required: false,
-    description: `FastNoiseLite parameter ${p}`
   }));
 
   const baseXY = [
@@ -167,8 +152,7 @@ function buildOpenApi() {
       description: "REST wrapper exposing all FastNoiseLite configuration options"
     },
     paths: {
-
-      "/noise/value": {
+      "/value": {
         get: {
           summary: "Get a single noise value",
           parameters: [...baseXY, ...queryParams],
@@ -190,7 +174,7 @@ function buildOpenApi() {
         }
       },
 
-      "/noise/grid": {
+      "/grid": {
         get: {
           summary: "Generate a noise grid",
           parameters: [
@@ -206,23 +190,6 @@ function buildOpenApi() {
           }
         }
       },
-
-      // "/noise/warp": {
-      //   get: {
-      //     summary: "Apply domain warp",
-      //     parameters: [
-      //       { name: "x", in: "query", schema: { type: "number" } },
-      //       { name: "y", in: "query", schema: { type: "number" } },
-      //       ...queryParams
-      //     ],
-      //     responses: {
-      //       "200": {
-      //         description: "Warped coordinates"
-      //       }
-      //     }
-      //   }
-      // }
-
     }
   };
 }
@@ -232,7 +199,7 @@ const openApiSpec = buildOpenApi();
 /*
 OpenAPI JSON
 */
-app.get("/openapi.json", (req, res) => {
+app.get("/openapi.json", (req: Request, res: Response) => {
 
   res.json(openApiSpec);
 
@@ -243,17 +210,20 @@ Swagger UI
 */
 import { apiReference } from "@scalar/express-api-reference";
 
+const scalarConfig = {
+  spec: {
+    content: openApiSpec,
+  },
+  theme: "deepSpace" as const,
+  hideClientButton: true,
+  showSidebar: false,
+};
+
 app.get(
   "/",
-  apiReference({
-    spec: {
-      content: openApiSpec,
-    },
-    theme: "purple",
-  })
+  apiReference(scalarConfig)
 );
 
 app.listen(port, () => {
   console.log(`Noise API running on http://localhost:${port}`);
-  console.log(`Swagger docs: http://localhost:${port}/docs`);
 });

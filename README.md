@@ -32,13 +32,13 @@ http://localhost:3000
 ### Get a single noise value
 
 ```
-GET /noise/value
+GET /value
 ```
 
 Example:
 
 ```
-/noise/value?x=10&y=20&NoiseType=OpenSimplex2&Seed=42
+/value?x=10&y=20&NoiseType=OpenSimplex2&Seed=42
 ```
 
 Response:
@@ -52,13 +52,13 @@ Response:
 ### Generate a noise grid
 
 ```
-GET /noise/grid
+GET /grid
 ```
 
 Example:
 
 ```
-/noise/grid?width=128&height=128&scale=0.02&NoiseType=Perlin&FractalOctaves=4
+/grid?width=128&height=128&scale=0.02&NoiseType=Perlin&FractalOctaves=4
 ```
 
 Response:
@@ -108,7 +108,7 @@ DomainWarpAmp → SetDomainWarpAmp
 Example:
 
 ```
-/noise/value?Seed=42&Frequency=0.01&NoiseType=Perlin
+/value?Seed=42&Frequency=0.01&NoiseType=Perlin
 ```
 
 ## License
