@@ -92,8 +92,8 @@ app.get("/grid", (req: Request, res: Response) => {
 
   const noise = buildNoise(req.query as Record<string, any>);
 
-  const w = Number(width);
-  const h = Number(height);
+  const w = Math.min(Number(width), 500);
+  const h = Math.min(Number(height), 500);
   const s = Number(scale);
   const startX = Number(x);
   const startY = Number(y);
@@ -220,8 +220,8 @@ function buildOpenApi() {
             { name: "x", in: "query", schema: { type: "number" }, description: "Starting X coordinate" },
             { name: "y", in: "query", schema: { type: "number" }, description: "Starting Y coordinate" },
             { name: "z", in: "query", schema: { type: "number" }, description: "Optional Z coordinate for a 2D slice of 3D noise" },
-            { name: "width", in: "query", schema: { type: "number" } },
-            { name: "height", in: "query", schema: { type: "number" } },
+            { name: "width", in: "query", schema: { type: "number", maximum: 500 }, description: "Width of the grid (max 500)" },
+            { name: "height", in: "query", schema: { type: "number", maximum: 500 }, description: "Height of the grid (max 500)" },
             { name: "scale", in: "query", schema: { type: "number" } },
             ...queryParams
           ],
