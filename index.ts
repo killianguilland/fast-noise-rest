@@ -86,23 +86,30 @@ Grid endpoint
 */
 app.get("/grid", (req: Request, res: Response) => {
 
-  const { width = 64, height = 64, scale = 0.01 } = req.query;
+  const { width = 64, height = 64, scale = 0.01, x = 0, y = 0, z } = req.query;
 
   const noise = buildNoise(req.query as Record<string, any>);
 
   const w = Number(width);
   const h = Number(height);
   const s = Number(scale);
+  const startX = Number(x);
+  const startY = Number(y);
+  const zCoord = z !== undefined ? Number(z) : undefined;
 
   const grid: number[][] = [];
 
-  for (let y = 0; y < h; y++) {
+  for (let iy = 0; iy < h; iy++) {
 
     const row: number[] = [];
 
-    for (let x = 0; x < w; x++) {
+    for (let ix = 0; ix < w; ix++) {
 
-      row.push(noise.GetNoise(x * s, y * s));
+      if (zCoord !== undefined) {
+        row.push(noise.GetNoise(startX + ix * s, startY + iy * s, zCoord));
+      } else {
+        row.push(noise.GetNoise(startX + ix * s, startY + iy * s));
+      }
 
     }
 
@@ -208,6 +215,9 @@ function buildOpenApi() {
         get: {
           summary: "Generate a noise grid",
           parameters: [
+            { name: "x", in: "query", schema: { type: "number" }, description: "Starting X coordinate" },
+            { name: "y", in: "query", schema: { type: "number" }, description: "Starting Y coordinate" },
+            { name: "z", in: "query", schema: { type: "number" }, description: "Optional Z coordinate for a 2D slice of 3D noise" },
             { name: "width", in: "query", schema: { type: "number" } },
             { name: "height", in: "query", schema: { type: "number" } },
             { name: "scale", in: "query", schema: { type: "number" } },
