@@ -1,7 +1,9 @@
 import express, { Request, Response } from "express";
+import cors from "cors";
 import FastNoiseLite from "fastnoise-lite";
 
 const app = express();
+app.use(cors());
 const port = process.argv[2] || 3000;
 
 /*
@@ -181,9 +183,9 @@ function buildOpenApi() {
   return {
     openapi: "3.0.0",
     info: {
-      title: "FastNoiseLite REST API",
+      title: "FastNoiseRest",
       version: "1.0.0",
-      description: "REST wrapper exposing all FastNoiseLite configuration options.<br/>See FastNoiseLite [documentation](https://docs.godotengine.org/en/stable/classes/class_fastnoiselite.html) for more information."
+      description: "REST wrapper exposing all FastNoiseLite configuration options.<br/><br/>See FastNoiseLite [documentation](https://docs.godotengine.org/en/stable/classes/class_fastnoiselite.html) for more information.<br/>Deploy your own api wrapper using the open-source [repository](https://github.com/killianguilland/fast-noise-rest)."
     },
     paths: {
       "/value": {
@@ -305,6 +307,7 @@ const scalarConfig = {
   theme: "deepSpace" as const,
   hideClientButton: true,
   showSidebar: false,
+  pageTitle: "FastNoiseRest",
 };
 
 app.get(
