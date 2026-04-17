@@ -106,7 +106,7 @@ export function buildOpenApi() {
           }
         }
       },
-      "/presets/:id/grid": {
+      "/presets/{id}/grid": {
         get: {
           summary: "Generate a noise grid from a composite preset",
           description: "Fetches a preset by ID, generates noise for each of its layers, and blends them together mathematically into a single composite grid.",
@@ -180,7 +180,19 @@ export function buildOpenApi() {
             noiseType: { type: "string", enum: enums.NoiseType },
             frequency: { type: "number", format: "float", example: 0.01 },
             fractalType: { type: "string", enum: enums.FractalType },
-            blendMode: { type: "string", enum: ["normal", "add", "multiply", "subtract", "max", "min", "screen", "overlay", "difference"], description: "Mathematical operation to combine this layer with the previous ones." },
+            blendMode: { 
+              type: "string", 
+              enum: ["normal", "add", "multiply", "subtract", "max", "min", "screen", "overlay", "difference"], 
+              description: "Mathematical operation used to combine this layer with previous ones:<br/>" +
+                "- **normal**: Replacement or linear interpolation based on weight.<br/>" +
+                "- **add**: Simple addition of noise values.<br/>" +
+                "- **multiply**: Multiplies the underlying value by the layer value.<br/>" +
+                "- **subtract**: Subtracts the layer value from the current base.<br/>" +
+                "- **max / min**: Logical comparison, keeping only the extreme values.<br/>" +
+                "- **screen**: Lightens the result (1 - (1-a)*(1-b)).<br/>" +
+                "- **overlay**: High-contrast blend mode combining multiply and screen.<br/>" +
+                "- **difference**: Absolute difference between values, useful for complex structural patterns."
+            },
             weight: { type: "number", format: "float", description: "Importance of this layer in the final result (0.0 to 1.0)" }
           }
         },
