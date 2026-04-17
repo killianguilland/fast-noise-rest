@@ -13,7 +13,7 @@ router.get("/", apiReference({
   content: spec,
   theme: "deepSpace",
   hideClientButton: true,
-  showSidebar: false,
+  showSidebar: true,
   pageTitle: "FastNoiseRest",
 }));
 
