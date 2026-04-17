@@ -1,11 +1,11 @@
 import express from "express";
 import cors from "cors";
-import valueRouter from "./routes/value";
-import gridRouter from "./routes/grid";
-import schemaRouter from "./routes/schema";
-import presetsRouter from "./routes/presets";
-import mapsRouter from "./routes/maps";
-import docsRouter from "./routes/docs";
+import valueRouter from "./routes/value.js";
+import gridRouter from "./routes/grid.js";
+import schemaRouter from "./routes/schema.js";
+import presetsRouter from "./routes/presets.js";
+import mapsRouter from "./routes/maps.js";
+import docsRouter from "./routes/docs.js";
 
 const app = express();
 app.use(cors());

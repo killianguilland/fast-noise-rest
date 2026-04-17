@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { mapsData } from "../constants/maps";
+import { mapsData } from "../constants/maps.js";
 
 const router = Router();
 
