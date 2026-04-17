@@ -36,6 +36,124 @@ const parameters = setters.map(s => {
 });
 
 /*
+Static Presets Data
+*/
+const presetsData = [
+  {
+    "id": 1,
+    "name": "Eroded Plains",
+    "description": "Vast rolling plains with slight surface perturbations.",
+    "rating": 4.2,
+    "layers": [
+      {
+        "layerName": "Base Elevation",
+        "noiseType": "OpenSimplex2",
+        "frequency": 0.01,
+        "fractalType": "None",
+        "blendMode": "normal",
+        "weight": 1.0
+      },
+      {
+        "layerName": "Surface Details",
+        "noiseType": "Perlin",
+        "frequency": 0.05,
+        "fractalType": "FBm",
+        "blendMode": "add",
+        "weight": 0.15
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Jagged Peaks",
+    "description": "Steep and dangerous mountains, ideal for hostile environments.",
+    "rating": 4.8,
+    "layers": [
+      {
+        "layerName": "Ridged Mountains",
+        "noiseType": "OpenSimplex2S",
+        "frequency": 0.015,
+        "fractalType": "Ridged",
+        "blendMode": "normal",
+        "weight": 1.0
+      },
+      {
+        "layerName": "High Frequency Noise",
+        "noiseType": "ValueCubic",
+        "frequency": 0.08,
+        "fractalType": "None",
+        "blendMode": "multiply",
+        "weight": 0.8
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Cellular Tissue",
+    "description": "An organic pattern shaped like a web or interconnected cells.",
+    "rating": 3.5,
+    "layers": [
+      {
+        "layerName": "Cell Base",
+        "noiseType": "Cellular",
+        "frequency": 0.04,
+        "fractalType": "None",
+        "blendMode": "normal",
+        "weight": 1.0
+      },
+      {
+        "layerName": "Hole Carver",
+        "noiseType": "OpenSimplex2",
+        "frequency": 0.06,
+        "fractalType": "None",
+        "blendMode": "subtract",
+        "weight": 0.3
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Alien Desert",
+    "description": "Shifting dunes with strange plateaus created by domain warping.",
+    "rating": 4.5,
+    "layers": [
+      {
+        "layerName": "Warped Dunes",
+        "noiseType": "Perlin",
+        "frequency": 0.02,
+        "fractalType": "DomainWarpProgressive",
+        "blendMode": "normal",
+        "weight": 1.0
+      },
+      {
+        "layerName": "Alien Plateaus",
+        "noiseType": "Cellular",
+        "frequency": 0.03,
+        "fractalType": "PingPong",
+        "blendMode": "max",
+        "weight": 0.5
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Raw White Noise",
+    "description": "Total visual chaos, very dense and grainy.",
+    "rating": 2.1,
+    "layers": [
+      {
+        "layerName": "Pure Noise",
+        "noiseType": "Value",
+        "frequency": 0.5,
+        "fractalType": "None",
+        "blendMode": "normal",
+        "weight": 1.0
+      }
+    ]
+  }
+];
+
+/*
 Apply parameters dynamically
 */
 function applyParams(noise: FastNoiseLite, params: Record<string, any>) {
@@ -139,8 +257,11 @@ app.get("/schema", (req: Request, res: Response) => {
 });
 
 /*
-Generate OpenAPI dynamically
+Presets endpoint
 */
+app.get("/presets", (req: Request, res: Response) => {
+  res.json(presetsData);
+});
 function buildOpenApi() {
 
   const queryParams = parameters.map(p => {
@@ -280,6 +401,58 @@ function buildOpenApi() {
           }
         }
       },
+
+      "/presets": {
+        get: {
+          summary: "Get a list of noise presets",
+          description: "Returns a collection of noise compositions with multiple layers and blend modes.",
+          responses: {
+            "200": {
+              description: "Array of complex presets",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "array",
+                    items: {
+                      $ref: "#/components/schemas/Preset"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+    },
+    components: {
+      schemas: {
+        Preset: {
+          type: "object",
+          properties: {
+            id: { type: "integer" },
+            name: { type: "string" },
+            description: { type: "string" },
+            rating: { type: "number" },
+            layers: {
+              type: "array",
+              items: {
+                $ref: "#/components/schemas/Layer"
+              }
+            }
+          }
+        },
+        Layer: {
+          type: "object",
+          properties: {
+            layerName: { type: "string" },
+            noiseType: { type: "string" },
+            frequency: { type: "number" },
+            fractalType: { type: "string" },
+            blendMode: { type: "string" },
+            weight: { type: "number" }
+          }
+        }
+      }
     }
   };
 }
