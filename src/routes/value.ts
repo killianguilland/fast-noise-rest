@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { buildNoise } from "../services/noise-service";
+import { buildNoise } from "../services/noise-service.js";
 
 const router = Router();
 

@@ -1,4 +1,4 @@
-import { Map } from "../types";
+import { Map } from "../types.js";
 
 export const mapsData: Map[] = [
   {

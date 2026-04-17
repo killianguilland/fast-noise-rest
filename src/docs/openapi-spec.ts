@@ -1,4 +1,4 @@
-import { parameters, enums } from "../services/noise-service";
+import { parameters, enums } from "../services/noise-service.js";
 
 export function buildOpenApi() {
   const queryParams = parameters.map(p => {
@@ -106,6 +106,28 @@ export function buildOpenApi() {
           }
         }
       },
+      "/presets/:id/grid": {
+        get: {
+          summary: "Generate a noise grid from a composite preset",
+          description: "Fetches a preset by ID, generates noise for each of its layers, and blends them together mathematically into a single composite grid.",
+          parameters: [
+            { name: "id", in: "path", required: true, schema: { type: "integer" } },
+            { name: "x", in: "query", schema: { type: "number" } },
+            { name: "y", in: "query", schema: { type: "number" } },
+            { name: "z", in: "query", schema: { type: "number" } },
+            { name: "width", in: "query", schema: { type: "number", maximum: 500 } },
+            { name: "height", in: "query", schema: { type: "number", maximum: 500 } },
+            { name: "scale", in: "query", schema: { type: "number" } },
+            { name: "seed", in: "query", schema: { type: "integer" } }
+          ],
+          responses: {
+            "200": {
+              description: "Composite noise grid",
+              content: { "application/json": { schema: { type: "object", properties: { width: { type: "number" }, height: { type: "number" }, data: { type: "array", items: { type: "array", items: { type: "number" } } } } } } }
+            }
+          }
+        }
+      },
       "/maps": {
         get: {
           summary: "Get a paginated list of maps",
@@ -158,7 +180,7 @@ export function buildOpenApi() {
             noiseType: { type: "string", enum: enums.NoiseType },
             frequency: { type: "number", format: "float", example: 0.01 },
             fractalType: { type: "string", enum: enums.FractalType },
-            blendMode: { type: "string", enum: ["normal", "add", "multiply", "subtract", "max"], description: "Mathematical operation to combine this layer with the previous ones." },
+            blendMode: { type: "string", enum: ["normal", "add", "multiply", "subtract", "max", "min", "screen", "overlay", "difference"], description: "Mathematical operation to combine this layer with the previous ones." },
             weight: { type: "number", format: "float", description: "Importance of this layer in the final result (0.0 to 1.0)" }
           }
         },

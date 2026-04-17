@@ -47,3 +47,57 @@ export function buildNoise(params: Record<string, any>) {
   applyParams(noise, params);
   return noise;
 }
+
+export function generateGrid(
+  noise: FastNoiseLite,
+  w: number,
+  h: number,
+  s: number,
+  startX: number,
+  startY: number,
+  zCoord?: number
+): number[][] {
+  const grid: number[][] = [];
+  for (let iy = 0; iy < h; iy++) {
+    const row: number[] = [];
+    for (let ix = 0; ix < w; ix++) {
+      if (zCoord !== undefined) {
+        row.push(noise.GetNoise(startX + ix * s, startY + iy * s, zCoord));
+      } else {
+        row.push(noise.GetNoise(startX + ix * s, startY + iy * s));
+      }
+    }
+    grid.push(row);
+  }
+  return grid;
+}
+
+export function blend(base: number, added: number, mode: string, weight: number): number {
+  const layerValue = added * weight;
+
+  switch (mode) {
+    case "add":
+      return base + layerValue;
+    case "subtract":
+      return base - layerValue;
+    case "multiply":
+      return base * layerValue;
+    case "max":
+      return Math.max(base, layerValue);
+    case "min":
+      return Math.min(base, layerValue);
+    case "screen":
+      return 1 - (1 - base) * (1 - layerValue);
+    case "overlay":
+      return base < 0.5
+        ? 2 * base * layerValue
+        : 1 - 2 * (1 - base) * (1 - layerValue);
+    case "difference":
+      return Math.abs(base - layerValue);
+    case "normal":
+    default:
+      // Linear interpolation for normal mode if it's not the first layer
+      // If it's the first layer, base will be 0 and weight 1, so it results in 'added'
+      return base * (1 - weight) + added * weight;
+  }
+}

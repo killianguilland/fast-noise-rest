@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { buildOpenApi } from "../docs/openapi-spec";
+import { buildOpenApi } from "../docs/openapi-spec.js";
 import { apiReference } from "@scalar/express-api-reference";
 
 const router = Router();
@@ -10,7 +10,7 @@ router.get("/openapi.json", (req: Request, res: Response) => {
 });
 
 router.get("/", apiReference({
-  spec: { content: spec },
+  content: spec,
   theme: "deepSpace",
   hideClientButton: true,
   showSidebar: false,
