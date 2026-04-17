@@ -39,6 +39,7 @@ export function buildOpenApi() {
       "/value": {
         get: {
           summary: "Get a single noise value",
+          operationId: "getNoiseValue",
           tags: ["Noise Generation"],
           parameters: [...baseXY, ...queryParams],
           responses: {
@@ -52,6 +53,7 @@ export function buildOpenApi() {
       "/grid": {
         get: {
           summary: "Generate a noise grid",
+          operationId: "getNoiseGrid",
           tags: ["Noise Generation"],
           parameters: [
             { name: "x", in: "query", schema: { type: "number" } },
@@ -73,6 +75,7 @@ export function buildOpenApi() {
       "/schema": {
         get: {
           summary: "Get FastNoiseLite schema",
+          operationId: "getNoiseSchema",
           tags: ["Configuration"],
           responses: {
             "200": {
@@ -85,6 +88,7 @@ export function buildOpenApi() {
       "/presets": {
         get: {
           summary: "Get a list of noise presets",
+          operationId: "getPresets",
           tags: ["Presets"],
           description: "Returns a collection of multi-layer noise configurations. Each preset defines how multiple noise layers are blended together.",
           responses: {
@@ -113,6 +117,7 @@ export function buildOpenApi() {
       "/presets/{id}/grid": {
         get: {
           summary: "Generate a noise grid from a composite preset",
+          operationId: "getPresetGridById",
           tags: ["Presets"],
           description: "Fetches a preset by ID, generates noise for each of its layers, and blends them together mathematically into a single composite grid.",
           parameters: [
@@ -136,6 +141,7 @@ export function buildOpenApi() {
       "/maps": {
         get: {
           summary: "Get a paginated list of maps",
+          operationId: "getMaps",
           tags: ["Maps"],
           description: "Returns map objects that combine noise presets with rendering rules (colors, emojis) and thresholds.",
           parameters: paginationParams,
