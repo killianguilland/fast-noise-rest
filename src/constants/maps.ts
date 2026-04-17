@@ -4,142 +4,125 @@ export const mapsData: Map[] = [
   {
     "id": 101,
     "name": "Emerald Archipelago",
-    "biome": "Tropical",
-    "complexity": 3,
+    "difficulty": 2,
     "description": "Scattered islands with dense tropical forests and shallow sandy lagoons.",
     "layers": [
       {
-        "layerOrder": 1,
         "presetId": 1,
         "type": "elevation",
         "threshold": 0.0,
         "renderType": "color-gradient",
-        "renderValue": "water-to-grass"
+        "renderData": ["#0288D1", "#29B6F6", "#81C784"]
       },
       {
-        "layerOrder": 2,
         "presetId": 3,
-        "type": "trees-scattering",
+        "type": "scattering",
         "threshold": 0.65,
         "renderType": "emoji",
-        "renderValue": "🌴"
+        "renderData": ["🌴", "🥥", "🦜"]
       }
     ]
   },
   {
     "id": 102,
     "name": "Cursed Volcanic Faults",
-    "biome": "Volcanic",
-    "complexity": 5,
+    "difficulty": 5,
     "description": "A hostile wasteland of dark rocks torn apart by glowing lava rivers.",
     "layers": [
       {
-        "layerOrder": 1,
         "presetId": 2,
         "type": "elevation",
         "threshold": 0.0,
         "renderType": "color-gradient",
-        "renderValue": "dark-rock"
+        "renderData": ["#111111", "#2A2A2A", "#4A4A4A"]
       },
       {
-        "layerOrder": 2,
         "presetId": 5,
-        "type": "lava-rivers",
+        "type": "scattering",
         "threshold": 0.85,
         "renderType": "emoji",
-        "renderValue": "🔥"
+        "renderData": ["🔥"]
       },
       {
-        "layerOrder": 3,
         "presetId": 4,
-        "type": "rocks-scattering",
+        "type": "scattering",
         "threshold": 0.60,
         "renderType": "emoji",
-        "renderValue": "🪨"
+        "renderData": ["🪨", "🌑"]
       }
     ]
   },
   {
     "id": 103,
     "name": "Frozen Tundra",
-    "biome": "Ice",
-    "complexity": 2,
+    "difficulty": 3,
     "description": "Endless snowy plains dotted with frozen lakes and sharp ice spikes.",
     "layers": [
       {
-        "layerOrder": 1,
         "presetId": 1,
         "type": "elevation",
         "threshold": 0.0,
         "renderType": "color-gradient",
-        "renderValue": "snow-white"
+        "renderData": ["#81D4FA", "#E0F7FA", "#FFFFFF"]
       },
       {
-        "layerOrder": 2,
         "presetId": 3,
-        "type": "ice-spikes",
+        "type": "scattering",
         "threshold": 0.75,
         "renderType": "emoji",
-        "renderValue": "🧊"
+        "renderData": ["🧊", "❄️"]
       },
       {
-        "layerOrder": 3,
         "presetId": 2,
-        "type": "dead-trees",
+        "type": "scattering",
         "threshold": 0.80,
         "renderType": "emoji",
-        "renderValue": "🌲"
+        "renderData": ["🌲", "🐺"]
       }
     ]
   },
   {
     "id": 104,
     "name": "Alien Mushroom Swamp",
-    "biome": "Alien",
-    "complexity": 4,
+    "difficulty": 4,
     "description": "A toxic purple marshland overgrown with giant, glowing fungi.",
     "layers": [
       {
-        "layerOrder": 1,
         "presetId": 4,
         "type": "elevation",
         "threshold": 0.0,
         "renderType": "color-gradient",
-        "renderValue": "purple-swamp"
+        "renderData": ["#311B92", "#6A1B9A", "#9C27B0"]
       },
       {
-        "layerOrder": 2,
         "presetId": 5,
-        "type": "fungi-scattering",
+        "type": "scattering",
         "threshold": 0.88,
         "renderType": "emoji",
-        "renderValue": "🍄"
+        "renderData": ["🍄", "🟣", "👽"]
       }
     ]
   },
   {
     "id": 105,
     "name": "Dry Canyons",
-    "biome": "Desert",
-    "complexity": 3,
+    "difficulty": 2,
     "description": "Deep, eroded red rock canyons with sparse, hardy vegetation.",
     "layers": [
       {
-        "layerOrder": 1,
         "presetId": 2,
         "type": "elevation",
         "threshold": 0.0,
         "renderType": "color-gradient",
-        "renderValue": "red-sandstone"
+        "renderData": ["#BF360C", "#D84315", "#FFCC80"]
       },
       {
-        "layerOrder": 2,
         "presetId": 3,
-        "type": "cactus-scattering",
+        "type": "scattering",
         "threshold": 0.70,
         "renderType": "emoji",
-        "renderValue": "🌵"
+        "renderData": ["🌵", "🏜️", "🐍"]
       }
     ]
   }
-];
+]

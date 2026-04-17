@@ -16,19 +16,17 @@ export interface Preset {
 }
 
 export interface MapLayer {
-  layerOrder: number;
   presetId: number;
   type: string;
   threshold: number;
   renderType: string;
-  renderValue: string;
+  renderData: string[];
 }
 
 export interface Map {
   id: number;
   name: string;
-  biome: string;
-  complexity: number;
+  difficulty: number;
   description: string;
   layers: MapLayer[];
 }

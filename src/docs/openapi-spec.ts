@@ -108,8 +108,8 @@ export function buildOpenApi() {
       },
       "/maps": {
         get: {
-          summary: "Get a paginated list of biome maps",
-          description: "Returns biome maps that combine noise presets with rendering rules (colors, emojis) and thresholds.",
+          summary: "Get a paginated list of maps",
+          description: "Returns map objects that combine noise presets with rendering rules (colors, emojis) and thresholds.",
           parameters: paginationParams,
           responses: {
             "200": {
@@ -167,8 +167,7 @@ export function buildOpenApi() {
           properties: {
             id: { type: "integer" },
             name: { type: "string" },
-            biome: { type: "string", enum: ["Tropical", "Volcanic", "Ice", "Alien", "Desert"] },
-            complexity: { type: "integer", minimum: 1, maximum: 5 },
+            difficulty: { type: "integer", minimum: 1, maximum: 5 },
             description: { type: "string" },
             layers: { type: "array", items: { $ref: "#/components/schemas/MapLayer" } }
           }
@@ -176,12 +175,11 @@ export function buildOpenApi() {
         MapLayer: {
           type: "object",
           properties: {
-            layerOrder: { type: "integer", description: "Z-order of the layer (lowest first)" },
             presetId: { type: "integer", description: "ID of the noise preset to use" },
             type: { type: "string", description: "Functional type of the layer (e.g., elevation, scattering)" },
             threshold: { type: "number", format: "float", description: "Noise value threshold for rendering" },
             renderType: { type: "string", enum: ["color-gradient", "emoji"] },
-            renderValue: { type: "string", description: "Color name or emoji character" }
+            renderData: { type: "array", items: { type: "string" }, description: "List of colors or emojis to use for rendering" }
           }
         }
       }
